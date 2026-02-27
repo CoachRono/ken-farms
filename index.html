@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ken Farms Tea Portal - Pro Edition</title>
     
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1b5e20">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
@@ -32,7 +36,6 @@
         .card {
             background: var(--white); padding: 20px; border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green);
-            transition: transform 0.2s;
         }
         .payroll-card { border-top-color: var(--blue); background-color: #e3f2fd; }
         .weight-card { border-top-color: #f9a825; }
@@ -51,34 +54,32 @@
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
         input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;}
         
-        /* Rate Controls */
         .rate-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .rate-inputs input { padding: 8px; margin-bottom: 5px; font-weight: bold; text-align: center; }
 
         button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
         button.submit-btn:hover { background: #0e3511; transform: translateY(-2px); }
         
-        button.pdf-btn { background: var(--blue); color: white; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(13, 71, 161, 0.2); }
-        button.pdf-btn:hover { background: #0a3d8d; }
+        button.pdf-btn { background: var(--blue); color: white; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         /* Tables & Search */
         .search-input { border-radius: 25px; border: 2px solid var(--accent); text-indent: 15px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-        th { background: #fdfdfd; color: var(--primary-green); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+        th { background: #fdfdfd; color: var(--primary-green); text-transform: uppercase; font-size: 0.75rem; }
         
         .money-text { font-weight: bold; color: var(--money); }
-        .date-stamp { font-size: 0.75rem; color: #999; display: block; font-weight: normal; }
-        .del-btn { color: var(--danger); border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1.2rem; line-height: 1; }
+        .date-stamp { font-size: 0.75rem; color: #999; display: block; }
+        .del-btn { color: var(--danger); border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
         
-        .scroll-area { max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #f0f0f0; }
+        .scroll-area { max-height: 500px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🍃 Ken Farms Manager</h1>
-    <p>Official Tea Production & Labor Ledger</p>
+    <p>Official Tea Production & Offline Ledger</p>
 </header>
 
 <div class="grid-container">
@@ -117,26 +118,22 @@
                 <div><label>Main</label><input type="number" id="rate-main" value="9" onchange="updateRates()"></div>
                 <div><label>Mosore</label><input type="number" id="rate-mosore" value="9" onchange="updateRates()"></div>
             </div>
-            <p style="font-size: 0.7rem; color: #777; margin: 0;">* Rates are captured at time of entry.</p>
         </div>
 
         <div class="section-box">
             <h2>Add Harvest Entry</h2>
             <form id="harvestForm">
-                <label>Worker Full Name</label>
-                <input type="text" id="workerName" placeholder="e.g. Samuel Okoth" required>
-                
+                <label>Worker Name</label>
+                <input type="text" id="workerName" placeholder="Full Name" required>
                 <label>Farm Location</label>
                 <select id="farmId">
                     <option value="faith">Ken Farm Faith</option>
                     <option value="main">Ken Farm Main</option>
                     <option value="mosore">Mosore</option>
                 </select>
-                
-                <label>Weight in Kg</label>
+                <label>Weight (kg)</label>
                 <input type="number" id="weight" step="0.1" placeholder="0.0" required>
-                
-                <button type="submit" class="submit-btn">Save to Ledger</button>
+                <button type="submit" class="submit-btn">Save Entry</button>
             </form>
         </div>
 
@@ -153,7 +150,7 @@
 
     <div class="section-box">
         <h2>Production History</h2>
-        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search by name, date, or farm...">
+        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search names, dates, or farms...">
         <div class="scroll-area">
             <table id="historyTable">
                 <thead>
@@ -173,9 +170,22 @@
 </div>
 
 <script>
-    // --- SECURE STORAGE LOGIC ---
-    const DB_KEY = "KEN_FARMS_SECURE_STORAGE_V12";
-    const RATE_KEY = "KEN_FARMS_RATE_STORAGE_V12";
+    // --- OFFLINE APP ENGINE ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            const swCode = `
+                const CACHE_NAME = 'ken-farms-cache-v1';
+                self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([window.location.href]))));
+                self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+            `;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        });
+    }
+
+    // --- DATA HANDLING ---
+    const DB_KEY = "KEN_FARMS_FINAL_SECURE_V2026";
+    const RATE_KEY = "KEN_FARMS_RATE_SECURE_V2026";
 
     let records = JSON.parse(localStorage.getItem(DB_KEY)) || [];
     let rates = JSON.parse(localStorage.getItem(RATE_KEY)) || { faith: 9, main: 9, mosore: 9 };
@@ -205,27 +215,22 @@
         let stats = { faith: 0, main: 0, mosore: 0, totalPay: 0, totalWeight: 0 };
         let workerTotals = {};
 
-        // Sort data so newest is at the top
-        const displayData = [...records].reverse();
-
-        displayData.forEach((rec) => {
+        [...records].reverse().forEach((rec) => {
             stats[rec.farmId] += rec.weight;
             stats.totalWeight += rec.weight;
             const entryPay = rec.weight * rec.rateUsed;
             stats.totalPay += entryPay;
-
             workerTotals[rec.name] = (workerTotals[rec.name] || 0) + entryPay;
 
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><span class="date-stamp">${rec.dateString}</span><strong>${rec.name}</strong></td>
-                <td>${rec.farmName}</td>
-                <td>${rec.rateUsed}/-</td>
-                <td>${rec.weight}</td>
-                <td class="money-text">Ksh ${entryPay.toFixed(2)}</td>
-                <td><button class="del-btn" onclick="deleteRecord(${rec.id})">×</button></td>
-            `;
-            historyBody.appendChild(row);
+            historyBody.innerHTML += `
+                <tr>
+                    <td><span class="date-stamp">${rec.dateString}</span><strong>${rec.name}</strong></td>
+                    <td>${rec.farmName}</td>
+                    <td>${rec.rateUsed}/-</td>
+                    <td>${rec.weight}</td>
+                    <td class="money-text">Ksh ${entryPay.toFixed(2)}</td>
+                    <td><button class="del-btn" onclick="deleteRecord(${rec.id})">×</button></td>
+                </tr>`;
         });
 
         for (let worker in workerTotals) {
@@ -242,23 +247,22 @@
     document.getElementById('harvestForm').onsubmit = function(e) {
         e.preventDefault();
         const fId = document.getElementById('farmId').value;
-        const newEntry = {
+        records.push({
             id: Date.now(),
             name: document.getElementById('workerName').value.trim(),
             farmId: fId,
             farmName: document.getElementById('farmId').options[document.getElementById('farmId').selectedIndex].text,
             weight: parseFloat(document.getElementById('weight').value),
             rateUsed: rates[fId],
-            dateString: new Date().toDateString()
-        };
-        records.push(newEntry);
+            dateString: new Date().toLocaleDateString()
+        });
         saveAndRender();
         this.reset();
         document.getElementById('workerName').focus();
     };
 
     function deleteRecord(id) {
-        if(confirm("Permanently delete this harvest record?")) {
+        if(confirm("Delete this entry permanently?")) {
             records = records.filter(r => r.id !== id);
             saveAndRender();
         }
@@ -274,49 +278,30 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // --- Smart PDF Header ---
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(27, 94, 32); 
+        doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(27, 94, 32);
         doc.text("KEN FARMS TEA PRODUCTION", 105, 20, { align: "center" });
         
-        doc.setFontSize(10);
-        doc.setTextColor(100);
+        doc.setFontSize(10); doc.setTextColor(100);
         doc.text(`Official Payroll Summary: ${new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}`, 105, 28, { align: "center" });
-        doc.text(`Report Generated: ${new Date().toLocaleString()}`, 105, 33, { align: "center" });
 
-        // --- Executive Summary Box ---
         const totalKg = records.reduce((sum, r) => sum + r.weight, 0);
         const totalPay = records.reduce((sum, r) => sum + (r.weight * r.rateUsed), 0);
 
-        doc.setDrawColor(27, 94, 32);
-        doc.setLineWidth(0.5);
-        doc.rect(14, 40, 182, 22);
-        doc.setFontSize(11); doc.setTextColor(0);
-        doc.text("CONSOLIDATED TOTALS", 105, 46, { align: "center" });
-        doc.text(`Total Weight: ${totalKg.toFixed(1)} Kg`, 40, 55);
-        doc.text(`Total Payable: Ksh ${totalPay.toLocaleString()}`, 120, 55);
-
-        // --- Styled Table ---
         doc.autoTable({
-            startY: 68,
+            startY: 45,
             head: [['Date', 'Worker Name', 'Location', 'Rate', 'Weight', 'Total (Ksh)']],
             body: records.map(r => [r.dateString, r.name, r.farmName, `${r.rateUsed}/-`, `${r.weight} kg`, (r.weight * r.rateUsed).toFixed(2)]),
-            headStyles: { fillColor: [27, 94, 32], textColor: [255, 255, 255], fontSize: 10 },
-            alternateRowStyles: { fillColor: [245, 248, 245] },
-            margin: { bottom: 60 }
+            headStyles: { fillColor: [27, 94, 32] }
         });
 
-        // --- Signature Section ---
-        const finalY = doc.lastAutoTable.finalY + 30;
-        doc.setDrawColor(150);
-        doc.line(20, finalY, 80, finalY); doc.text("Plantation Manager Signature", 20, finalY + 5);
-        doc.line(130, finalY, 190, finalY); doc.text("Worker / Recipient Signature", 130, finalY + 5);
+        const finalY = doc.lastAutoTable.finalY + 20;
+        doc.text(`Grand Totals: ${totalKg.toFixed(1)} Kg | Ksh ${totalPay.toLocaleString()}`, 14, finalY);
+        doc.line(20, finalY + 20, 80, finalY + 20); doc.text("Manager Signature", 20, finalY + 25);
+        doc.line(130, finalY + 20, 190, finalY + 20); doc.text("Worker Signature", 130, finalY + 25);
 
         doc.save(`Tea_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     }
 
-    // Initialize UI
     document.getElementById('rate-faith').value = rates.faith;
     document.getElementById('rate-main').value = rates.main;
     document.getElementById('rate-mosore').value = rates.mosore;
