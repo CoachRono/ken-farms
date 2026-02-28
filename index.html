@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ken Farms Tea Portal</title>
+    <title>Ken Farms Tea Portal - Pro Edition</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,13 +27,24 @@
         header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--primary-green); padding-bottom: 10px; }
         header h1 { color: var(--primary-green); margin: 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .card { background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green); }
+        /* Dashboard Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px; margin-bottom: 25px;
+        }
+        .card {
+            background: var(--white); padding: 20px; border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green);
+        }
         .payroll-card { border-top-color: var(--blue); background-color: #e3f2fd; }
-        .card h3 { margin: 0 0 10px 0; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+        .weight-card { border-top-color: #f9a825; }
+        
+        .card h3 { margin: 0 0 10px 0; font-size: 0.8rem; text-transform: uppercase; color: #666; letter-spacing: 1px; }
         .stat-val { font-weight: bold; color: var(--primary-green); font-size: 1.5rem; }
         .rate-badge { font-size: 0.75rem; background: #e8f5e9; padding: 3px 8px; border-radius: 4px; font-weight: bold; color: var(--primary-green); border: 1px solid var(--accent); }
         
+        /* Main Layout */
         .main-content { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
         @media (max-width: 950px) { .main-content { grid-template-columns: 1fr; } }
 
@@ -46,19 +57,24 @@
         .rate-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .rate-inputs input { padding: 8px; font-weight: bold; text-align: center; }
 
-        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
         button.submit-btn:hover { background: #0e3511; transform: translateY(-2px); }
+        
         button.pdf-btn { background: var(--blue); color: white; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        .worker-tag { display: inline-flex; align-items: center; background: #eee; padding: 5px 12px; border-radius: 20px; margin: 4px; font-size: 0.85rem; border: 1px solid #ddd; }
-        .worker-tag button { width: auto; padding: 0 2px; margin: 0 0 0 8px; border: none; background: none; color: var(--danger); cursor: pointer; font-weight: bold; }
+        .worker-tag { display: inline-flex; align-items: center; background: #f0f0f0; padding: 4px 10px; border-radius: 20px; margin: 3px; font-size: 0.8rem; border: 1px solid #ddd; }
+        .worker-tag button { width: auto; padding: 0 0 0 8px; margin: 0; border: none; background: none; color: var(--danger); cursor: pointer; font-weight: bold; }
 
+        /* Tables & Search */
         .search-input { border-radius: 25px; border: 2px solid var(--accent); text-indent: 15px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
         th { background: #fdfdfd; color: var(--primary-green); text-transform: uppercase; font-size: 0.75rem; }
+        
         .money-text { font-weight: bold; color: var(--money); }
+        .date-stamp { font-size: 0.75rem; color: #999; display: block; }
         .del-btn { color: var(--danger); border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
+        
         .scroll-area { max-height: 500px; overflow-y: auto; }
     </style>
 </head>
@@ -66,7 +82,7 @@
 
 <header>
     <h1>🍃 Ken Farms Manager</h1>
-    <p>Official Tea Production & Offline Ledger</p>
+    <p>Official Tea Production & Labor Ledger</p>
 </header>
 
 <div class="grid-container">
@@ -85,6 +101,10 @@
         <div><span class="stat-val" id="month-mosore">0.0</span> kg</div>
         <span class="rate-badge">Ksh <span id="disp-rate-mosore">9</span>/kg</span>
     </div>
+    <div class="card weight-card">
+        <h3>Total Monthly Weight</h3>
+        <div class="stat-val" style="color:#f57f17"><span id="total-weight">0.0</span> kg</div>
+    </div>
     <div class="card payroll-card">
         <h3>Grand Payroll</h3>
         <div class="stat-val" style="color:var(--blue)">Ksh <span id="total-payroll">0</span></div>
@@ -97,8 +117,8 @@
         <div class="section-box" style="border-left: 5px solid var(--blue);">
             <h2>1. Worker Registry</h2>
             <div style="display: flex; gap: 5px;">
-                <input type="text" id="newWorkerName" placeholder="New Worker" style="margin-bottom: 0;">
-                <button onclick="addWorker()" style="width: 60px; margin-bottom: 0; background: var(--blue); color: white; border: none;">Add</button>
+                <input type="text" id="newWorkerName" placeholder="New Name" style="margin-bottom: 0;">
+                <button onclick="addWorker()" style="width: 70px; margin-bottom: 0; background: var(--blue); color: white; border: none; font-size: 0.8rem;">Add</button>
             </div>
             <div id="workerList" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;"></div>
         </div>
@@ -130,14 +150,14 @@
                 <label>Weight (kg)</label>
                 <input type="number" id="weight" step="0.1" placeholder="0.0" required>
                 
-                <button type="submit" class="submit-btn">Save Entry</button>
+                <button type="submit" class="submit-btn">Save to Ledger</button>
             </form>
         </div>
     </div>
 
     <div class="section-box">
         <h2>Production History</h2>
-        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search records...">
+        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search names, dates, or farms...">
         <div class="scroll-area">
             <table id="historyTable">
                 <thead>
@@ -146,7 +166,7 @@
                         <th>Farm</th>
                         <th>Rate</th>
                         <th>Kg</th>
-                        <th>Pay</th>
+                        <th>Earnings</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -161,7 +181,7 @@
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             const swCode = `
-                const CACHE_NAME = 'ken-farms-v14';
+                const CACHE_NAME = 'ken-farms-cache-v15';
                 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([window.location.href]))));
                 self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
             `;
@@ -171,11 +191,11 @@
     }
 
     // --- DATA HANDLING ---
-    const DB_KEY = "KEN_FARMS_FINAL_SECURE_V14";
-    const RATE_KEY = "KEN_FARMS_RATE_SECURE_V14";
-    const WORKER_KEY = "KEN_FARMS_WORKERS_V14";
+    const DB_KEY = "KEN_FARMS_FINAL_2026_V15";
+    const RATE_KEY = "KEN_FARMS_RATE_2026_V15";
+    const WORKER_KEY = "KEN_FARMS_WORKERS_2026_V15";
 
-    // DEFAULT WORKERS LIST
+    // YOUR SUPPLIED NAMES
     const initialWorkers = ["Sharon", "Daisy 2", "Chepkoech", "Doreen"];
 
     let records = JSON.parse(localStorage.getItem(DB_KEY)) || [];
@@ -187,7 +207,6 @@
         const name = document.getElementById('newWorkerName').value.trim();
         if (name && !workers.includes(name)) {
             workers.push(name);
-            workers.sort();
             localStorage.setItem(WORKER_KEY, JSON.stringify(workers));
             document.getElementById('newWorkerName').value = '';
             updateWorkerUI();
@@ -208,7 +227,6 @@
         listDiv.innerHTML = '';
         dropdown.innerHTML = '<option value="">-- Choose Worker --</option>';
 
-        // Sort to keep it tidy
         workers.sort().forEach(w => {
             listDiv.innerHTML += `<span class="worker-tag">${w} <button onclick="removeWorker('${w}')">×</button></span>`;
             const opt = document.createElement('option');
@@ -237,16 +255,17 @@
     function render() {
         const historyBody = document.getElementById('historyBody');
         historyBody.innerHTML = '';
-        let stats = { faith: 0, main: 0, mosore: 0, totalPay: 0 };
+        let stats = { faith: 0, main: 0, mosore: 0, totalPay: 0, totalWeight: 0 };
 
         [...records].reverse().forEach((rec) => {
             stats[rec.farmId] += rec.weight;
+            stats.totalWeight += rec.weight;
             const pay = rec.weight * rec.rateUsed;
             stats.totalPay += pay;
 
             historyBody.innerHTML += `
                 <tr>
-                    <td><span style="font-size:0.75rem; color:#999">${rec.dateString}</span><br><strong>${rec.name}</strong></td>
+                    <td><span class="date-stamp">${rec.dateString}</span><strong>${rec.name}</strong></td>
                     <td>${rec.farmName}</td>
                     <td>${rec.rateUsed}/-</td>
                     <td>${rec.weight}</td>
@@ -258,13 +277,14 @@
         document.getElementById('month-faith').innerText = stats.faith.toFixed(1);
         document.getElementById('month-main').innerText = stats.main.toFixed(1);
         document.getElementById('month-mosore').innerText = stats.mosore.toFixed(1);
+        document.getElementById('total-weight').innerText = stats.totalWeight.toFixed(1);
         document.getElementById('total-payroll').innerText = stats.totalPay.toLocaleString();
     }
 
     document.getElementById('harvestForm').onsubmit = function(e) {
         e.preventDefault();
         const fId = document.getElementById('farmId').value;
-        records.push({
+        const entry = {
             id: Date.now(),
             name: document.getElementById('workerDropdown').value,
             farmId: fId,
@@ -272,9 +292,10 @@
             weight: parseFloat(document.getElementById('weight').value),
             rateUsed: rates[fId],
             dateString: new Date().toLocaleDateString()
-        });
+        };
+        records.push(entry);
         saveAndRender();
-        this.reset();
+        document.getElementById('weight').value = '';
     };
 
     function deleteRecord(id) {
@@ -293,18 +314,26 @@
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(22); doc.setTextColor(27, 94, 32);
+        
+        doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(27, 94, 32);
         doc.text("KEN FARMS TEA PRODUCTION", 105, 20, { align: "center" });
+        
         doc.autoTable({
             startY: 40,
             head: [['Date', 'Worker', 'Location', 'Rate', 'Weight', 'Total (Ksh)']],
             body: records.map(r => [r.dateString, r.name, r.farmName, `${r.rateUsed}/-`, `${r.weight} kg`, (r.weight * r.rateUsed).toFixed(2)]),
             headStyles: { fillColor: [27, 94, 32] }
         });
-        doc.save(`Ken_Farms_Report.pdf`);
+
+        const finalY = doc.lastAutoTable.finalY + 20;
+        doc.setDrawColor(150);
+        doc.line(20, finalY, 80, finalY); doc.text("Manager Signature", 20, finalY + 5);
+        doc.line(130, finalY, 190, finalY); doc.text("Worker Signature", 130, finalY + 5);
+
+        doc.save(`Ken_Farms_Report_${new Date().toLocaleDateString()}.pdf`);
     }
 
-    // Initialize
+    // Initialize UI
     document.getElementById('rate-faith').value = rates.faith;
     document.getElementById('rate-main').value = rates.main;
     document.getElementById('rate-mosore').value = rates.mosore;
