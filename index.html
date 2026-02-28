@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ken Farms Tea Portal - Pro Edition</title>
+    <title>Ken Farms Tea Portal - Executive Edition</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,24 +27,12 @@
         header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--primary-green); padding-bottom: 10px; }
         header h1 { color: var(--primary-green); margin: 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Dashboard Grid */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px; margin-bottom: 25px;
-        }
-        .card {
-            background: var(--white); padding: 20px; border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green);
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .card { background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green); }
         .payroll-card { border-top-color: var(--blue); background-color: #e3f2fd; }
-        .weight-card { border-top-color: #f9a825; }
-        
-        .card h3 { margin: 0 0 10px 0; font-size: 0.8rem; text-transform: uppercase; color: #666; letter-spacing: 1px; }
         .stat-val { font-weight: bold; color: var(--primary-green); font-size: 1.5rem; }
         .rate-badge { font-size: 0.75rem; background: #e8f5e9; padding: 3px 8px; border-radius: 4px; font-weight: bold; color: var(--primary-green); border: 1px solid var(--accent); }
         
-        /* Main Layout */
         .main-content { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
         @media (max-width: 950px) { .main-content { grid-template-columns: 1fr; } }
 
@@ -57,32 +45,28 @@
         .rate-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .rate-inputs input { padding: 8px; font-weight: bold; text-align: center; }
 
-        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
-        button.submit-btn:hover { background: #0e3511; transform: translateY(-2px); }
-        
+        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
         button.pdf-btn { background: var(--blue); color: white; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         .worker-tag { display: inline-flex; align-items: center; background: #f0f0f0; padding: 4px 10px; border-radius: 20px; margin: 3px; font-size: 0.8rem; border: 1px solid #ddd; }
-        .worker-tag button { width: auto; padding: 0 0 0 8px; margin: 0; border: none; background: none; color: var(--danger); cursor: pointer; font-weight: bold; }
+        .worker-tag button { border: none; background: none; color: var(--danger); cursor: pointer; font-weight: bold; margin-left: 8px; }
 
-        /* Tables & Search */
         .search-input { border-radius: 25px; border: 2px solid var(--accent); text-indent: 15px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
         th { background: #fdfdfd; color: var(--primary-green); text-transform: uppercase; font-size: 0.75rem; }
-        
         .money-text { font-weight: bold; color: var(--money); }
-        .date-stamp { font-size: 0.75rem; color: #999; display: block; }
-        .del-btn { color: var(--danger); border: none; background: none; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
-        
         .scroll-area { max-height: 500px; overflow-y: auto; }
+        
+        /* Camera Preview */
+        #video-preview { width: 100%; border-radius: 12px; display: none; margin-bottom: 15px; background: #000; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🍃 Ken Farms Manager</h1>
-    <p>Official Tea Production & Labor Ledger</p>
+    <p>Official Tea Production & Executive Payroll</p>
 </header>
 
 <div class="grid-container">
@@ -100,10 +84,6 @@
         <h3>Mosore Farm</h3>
         <div><span class="stat-val" id="month-mosore">0.0</span> kg</div>
         <span class="rate-badge">Ksh <span id="disp-rate-mosore">9</span>/kg</span>
-    </div>
-    <div class="card weight-card">
-        <h3>Total Monthly Weight</h3>
-        <div class="stat-val" style="color:#f57f17"><span id="total-weight">0.0</span> kg</div>
     </div>
     <div class="card payroll-card">
         <h3>Grand Payroll</h3>
@@ -134,22 +114,18 @@
 
         <div class="section-box">
             <h2>3. Record Harvest</h2>
+            <video id="video-preview" autoplay playsinline></video>
             <form id="harvestForm">
                 <label>Select Worker</label>
-                <select id="workerDropdown" required>
-                    <option value="">-- Choose Worker --</option>
-                </select>
-                
+                <select id="workerDropdown" required><option value="">-- Choose Worker --</option></select>
                 <label>Farm Location</label>
                 <select id="farmId">
                     <option value="faith">Ken Farm Faith</option>
                     <option value="main">Ken Farm Main</option>
                     <option value="mosore">Mosore</option>
                 </select>
-                
                 <label>Weight (kg)</label>
                 <input type="number" id="weight" step="0.1" placeholder="0.0" required>
-                
                 <button type="submit" class="submit-btn">Save to Ledger</button>
             </form>
         </div>
@@ -157,7 +133,7 @@
 
     <div class="section-box">
         <h2>Production History</h2>
-        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search names, dates, or farms...">
+        <input type="text" id="searchInput" class="search-input" onkeyup="filterHistory()" placeholder="Search records...">
         <div class="scroll-area">
             <table id="historyTable">
                 <thead>
@@ -177,32 +153,29 @@
 </div>
 
 <script>
-    // --- OFFLINE APP ENGINE ---
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            const swCode = `
-                const CACHE_NAME = 'ken-farms-cache-v15';
-                self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([window.location.href]))));
-                self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-            `;
-            const blob = new Blob([swCode], {type: 'application/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
-        });
+    // --- CAMERA INITIALIZATION (AUTO-OPEN) ---
+    async function startCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            const video = document.getElementById('video-preview');
+            video.srcObject = stream;
+            video.style.display = 'block';
+        } catch (err) {
+            console.log("Camera access declined or unavailable.");
+        }
     }
+    window.addEventListener('load', startCamera);
 
     // --- DATA HANDLING ---
-    const DB_KEY = "KEN_FARMS_FINAL_2026_V15";
-    const RATE_KEY = "KEN_FARMS_RATE_2026_V15";
-    const WORKER_KEY = "KEN_FARMS_WORKERS_2026_V15";
+    const DB_KEY = "KEN_FARMS_FINAL_2026_V16";
+    const RATE_KEY = "KEN_FARMS_RATE_2026_V16";
+    const WORKER_KEY = "KEN_FARMS_WORKERS_2026_V16";
 
-    // YOUR SUPPLIED NAMES
     const initialWorkers = ["Sharon", "Daisy 2", "Chepkoech", "Doreen"];
-
     let records = JSON.parse(localStorage.getItem(DB_KEY)) || [];
     let rates = JSON.parse(localStorage.getItem(RATE_KEY)) || { faith: 9, main: 9, mosore: 9 };
     let workers = JSON.parse(localStorage.getItem(WORKER_KEY)) || initialWorkers;
 
-    // --- WORKER MANAGEMENT ---
     function addWorker() {
         const name = document.getElementById('newWorkerName').value.trim();
         if (name && !workers.includes(name)) {
@@ -214,7 +187,7 @@
     }
 
     function removeWorker(name) {
-        if(confirm(`Remove ${name} from registry?`)) {
+        if(confirm(`Remove ${name}?`)) {
             workers = workers.filter(w => w !== name);
             localStorage.setItem(WORKER_KEY, JSON.stringify(workers));
             updateWorkerUI();
@@ -226,17 +199,14 @@
         const dropdown = document.getElementById('workerDropdown');
         listDiv.innerHTML = '';
         dropdown.innerHTML = '<option value="">-- Choose Worker --</option>';
-
         workers.sort().forEach(w => {
             listDiv.innerHTML += `<span class="worker-tag">${w} <button onclick="removeWorker('${w}')">×</button></span>`;
             const opt = document.createElement('option');
-            opt.value = w;
-            opt.textContent = w;
+            opt.value = w; opt.textContent = w;
             dropdown.appendChild(opt);
         });
     }
 
-    // --- CORE LOGIC ---
     function updateRates() {
         rates.faith = parseFloat(document.getElementById('rate-faith').value) || 0;
         rates.main = parseFloat(document.getElementById('rate-main').value) || 0;
@@ -247,44 +217,33 @@
         document.getElementById('disp-rate-mosore').innerText = rates.mosore;
     }
 
-    function saveAndRender() {
-        localStorage.setItem(DB_KEY, JSON.stringify(records));
-        render();
-    }
-
     function render() {
         const historyBody = document.getElementById('historyBody');
         historyBody.innerHTML = '';
-        let stats = { faith: 0, main: 0, mosore: 0, totalPay: 0, totalWeight: 0 };
-
+        let stats = { faith: 0, main: 0, mosore: 0, totalPay: 0 };
         [...records].reverse().forEach((rec) => {
             stats[rec.farmId] += rec.weight;
-            stats.totalWeight += rec.weight;
             const pay = rec.weight * rec.rateUsed;
             stats.totalPay += pay;
-
-            historyBody.innerHTML += `
-                <tr>
-                    <td><span class="date-stamp">${rec.dateString}</span><strong>${rec.name}</strong></td>
-                    <td>${rec.farmName}</td>
-                    <td>${rec.rateUsed}/-</td>
-                    <td>${rec.weight}</td>
-                    <td class="money-text">Ksh ${pay.toFixed(2)}</td>
-                    <td><button class="del-btn" onclick="deleteRecord(${rec.id})">×</button></td>
-                </tr>`;
+            historyBody.innerHTML += `<tr>
+                <td><small>${rec.dateString}</small><br><strong>${rec.name}</strong></td>
+                <td>${rec.farmName}</td>
+                <td>${rec.rateUsed}/-</td>
+                <td>${rec.weight}</td>
+                <td class="money-text">Ksh ${pay.toFixed(2)}</td>
+                <td><button onclick="deleteRecord(${rec.id})" style="color:red; border:none; background:none; cursor:pointer;">×</button></td>
+            </tr>`;
         });
-
         document.getElementById('month-faith').innerText = stats.faith.toFixed(1);
         document.getElementById('month-main').innerText = stats.main.toFixed(1);
         document.getElementById('month-mosore').innerText = stats.mosore.toFixed(1);
-        document.getElementById('total-weight').innerText = stats.totalWeight.toFixed(1);
         document.getElementById('total-payroll').innerText = stats.totalPay.toLocaleString();
     }
 
     document.getElementById('harvestForm').onsubmit = function(e) {
         e.preventDefault();
         const fId = document.getElementById('farmId').value;
-        const entry = {
+        records.push({
             id: Date.now(),
             name: document.getElementById('workerDropdown').value,
             farmId: fId,
@@ -292,54 +251,50 @@
             weight: parseFloat(document.getElementById('weight').value),
             rateUsed: rates[fId],
             dateString: new Date().toLocaleDateString()
-        };
-        records.push(entry);
-        saveAndRender();
+        });
+        localStorage.setItem(DB_KEY, JSON.stringify(records));
+        render();
         document.getElementById('weight').value = '';
     };
 
     function deleteRecord(id) {
-        if(confirm("Delete this entry?")) {
+        if(confirm("Delete record?")) {
             records = records.filter(r => r.id !== id);
-            saveAndRender();
+            localStorage.setItem(DB_KEY, JSON.stringify(records));
+            render();
         }
-    }
-
-    function filterHistory() {
-        const val = document.getElementById("searchInput").value.toUpperCase();
-        const rows = document.getElementById("historyBody").getElementsByTagName("tr");
-        for (let r of rows) { r.style.display = r.innerText.toUpperCase().includes(val) ? "" : "none"; }
     }
 
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(27, 94, 32);
+        const totalKg = records.reduce((sum, r) => sum + r.weight, 0);
+        const totalPay = records.reduce((sum, r) => sum + (r.weight * r.rateUsed), 0);
+
+        doc.setFontSize(20); doc.setTextColor(27, 94, 32);
         doc.text("KEN FARMS TEA PRODUCTION", 105, 20, { align: "center" });
         
         doc.autoTable({
-            startY: 40,
-            head: [['Date', 'Worker', 'Location', 'Rate', 'Weight', 'Total (Ksh)']],
-            body: records.map(r => [r.dateString, r.name, r.farmName, `${r.rateUsed}/-`, `${r.weight} kg`, (r.weight * r.rateUsed).toFixed(2)]),
-            headStyles: { fillColor: [27, 94, 32] }
+            startY: 35,
+            head: [['Date', 'Worker', 'Farm', 'Rate', 'Weight (kg)', 'Pay (Ksh)']],
+            body: records.map(r => [r.dateString, r.name, r.farmName, r.rateUsed, r.weight.toFixed(1), (r.weight*r.rateUsed).toFixed(2)]),
+            foot: [['', '', '', 'GRAND TOTALS', `${totalKg.toFixed(1)} kg`, `Ksh ${totalPay.toLocaleString()}`]],
+            headStyles: { fillColor: [27, 94, 32] },
+            footStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' }
         });
 
-        const finalY = doc.lastAutoTable.finalY + 20;
-        doc.setDrawColor(150);
+        const finalY = doc.lastAutoTable.finalY + 25;
         doc.line(20, finalY, 80, finalY); doc.text("Manager Signature", 20, finalY + 5);
-        doc.line(130, finalY, 190, finalY); doc.text("Worker Signature", 130, finalY + 5);
+        doc.line(130, finalY, 190, finalY); doc.text("Recipient Signature", 130, finalY + 5);
 
-        doc.save(`Ken_Farms_Report_${new Date().toLocaleDateString()}.pdf`);
+        doc.save(`Ken_Farms_Report.pdf`);
     }
 
-    // Initialize UI
     document.getElementById('rate-faith').value = rates.faith;
     document.getElementById('rate-main').value = rates.main;
     document.getElementById('rate-mosore').value = rates.mosore;
-    updateRates();
-    updateWorkerUI();
-    render();
+    updateRates(); updateWorkerUI(); render();
 </script>
 
 </body>
