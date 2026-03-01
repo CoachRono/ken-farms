@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ken Farms Tea Portal</title>
+    <title>Ken Farms Tea Portal - Executive Edition</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,89 +25,136 @@
 
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--light-bg); margin: 0; padding: 20px; color: #333; }
         header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--primary-green); padding-bottom: 10px; }
-        header h1 { color: var(--primary-green); margin: 0; font-size: 2rem; text-transform: uppercase; }
+        header h1 { color: var(--primary-green); margin: 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .card { background: var(--white); padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 5px solid var(--primary-green); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .card { background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid var(--primary-green); }
         .payroll-card { border-top-color: var(--blue); background-color: #e3f2fd; grid-column: span 2; }
-        .card h3 { margin: 0 0 5px 0; font-size: 0.7rem; text-transform: uppercase; color: #666; }
-        .stat-val { font-weight: bold; color: var(--primary-green); font-size: 1.2rem; }
-        .rate-badge { font-size: 0.7rem; color: #666; font-style: italic; }
+        @media (max-width: 600px) { .payroll-card { grid-column: span 1; } }
 
-        .main-content { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+        .card h3 { margin: 0 0 10px 0; font-size: 0.8rem; text-transform: uppercase; color: #666; letter-spacing: 1px; }
+        .stat-val { font-weight: bold; color: var(--primary-green); font-size: 1.4rem; }
+        .rate-badge { font-size: 0.75rem; background: #f9f9f9; padding: 3px 8px; border-radius: 4px; color: #777; border: 1px solid #eee; display: block; margin-top: 5px; }
+        
+        .main-content { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
         @media (max-width: 950px) { .main-content { grid-template-columns: 1fr; } }
 
-        .section-box { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .section-box h2 { margin-top: 0; font-size: 1.1rem; color: var(--primary-green); border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .section-box { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-box h2 { margin-top: 0; font-size: 1.2rem; color: var(--primary-green); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
         
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;}
-        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;}
+        
+        button.submit-btn { background: var(--primary-green); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
+        button.submit-btn:hover { background: #0e3511; transform: translateY(-2px); }
         button.pdf-btn { background: var(--blue); color: white; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        .worker-tag { display: inline-block; background: #eee; padding: 4px 10px; border-radius: 15px; margin: 2px; font-size: 0.8rem; }
-        .worker-tag button { width: auto; padding: 0; margin: 0 0 0 5px; border: none; background: none; color: red; cursor: pointer; }
+        .worker-tag { display: inline-flex; align-items: center; background: #f0f0f0; padding: 4px 10px; border-radius: 20px; margin: 3px; font-size: 0.8rem; border: 1px solid #ddd; }
+        .worker-tag button { width: auto; padding: 0 0 0 8px; margin: 0; border: none; background: none; color: var(--danger); cursor: pointer; font-weight: bold; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
-        th { background: #fafafa; color: var(--primary-green); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background: #fdfdfd; color: var(--primary-green); text-transform: uppercase; font-size: 0.75rem; }
         .money-text { font-weight: bold; color: var(--money); }
-        #video-preview { width: 100%; border-radius: 10px; display: none; margin-bottom: 10px; background: #000; }
+        .details-stamp { font-size: 0.75rem; color: #777; font-style: italic; display: block; margin-top: 2px;}
+        .scroll-area { max-height: 500px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🍃 Ken Farms Manager</h1>
-    <p>Buyer-Specific Tea Ledger</p>
+    <p>Official Tea Buyer & Payroll Ledger</p>
 </header>
 
 <div class="grid-container">
-    <div class="card"><h3>Sasini</h3><div class="stat-val" id="total-sasini">0</div><span class="rate-badge">10/- per kg</span></div>
-    <div class="card"><h3>KTDA</h3><div class="stat-val" id="total-ktda">0</div><span class="rate-badge">10/- per kg</span></div>
-    <div class="card"><h3>Chemalal</h3><div class="stat-val" id="total-chemalal">0</div><span class="rate-badge">8/- per kg</span></div>
-    <div class="card"><h3>Taiwet</h3><div class="stat-val" id="total-taiwet">0</div><span class="rate-badge">8/- per kg</span></div>
-    <div class="card"><h3>Unilever</h3><div class="stat-val" id="total-unilever">0</div><span class="rate-badge">8/- per kg</span></div>
+    <div class="card">
+        <h3>Sasini</h3>
+        <div class="stat-val" id="total-sasini">0.0 kg</div>
+        <span class="rate-badge">Rate: 10/-</span>
+    </div>
+    <div class="card">
+        <h3>KTDA</h3>
+        <div class="stat-val" id="total-ktda">0.0 kg</div>
+        <span class="rate-badge">Rate: 10/-</span>
+    </div>
+    <div class="card">
+        <h3>Chemalal</h3>
+        <div class="stat-val" id="total-chemalal">0.0 kg</div>
+        <span class="rate-badge">Rate: 8/-</span>
+    </div>
+    <div class="card">
+        <h3>Taiwet</h3>
+        <div class="stat-val" id="total-taiwet">0.0 kg</div>
+        <span class="rate-badge">Rate: 8/-</span>
+    </div>
+    <div class="card">
+        <h3>Unilever</h3>
+        <div class="stat-val" id="total-unilever">0.0 kg</div>
+        <span class="rate-badge">Rate: 8/-</span>
+    </div>
     <div class="card payroll-card">
-        <h3>Total Monthly Payroll</h3>
-        <div class="stat-val" style="color:var(--blue); font-size: 1.8rem;">Ksh <span id="total-payroll">0</span></div>
-        <button class="pdf-btn" onclick="generatePDF()">📄 Export Official PDF</button>
+        <h3>Grand Monthly Payroll</h3>
+        <div class="stat-val" style="color:var(--blue); font-size: 2rem;">Ksh <span id="total-payroll">0</span></div>
+        <button class="pdf-btn" onclick="generatePDF()" style="margin-top:10px;">📄 Export Official PDF Report</button>
     </div>
 </div>
 
 <div class="main-content">
     <div class="sidebar">
-        <div class="section-box">
-            <h2>Worker Registry</h2>
+        <div class="section-box" style="border-left: 5px solid var(--blue);">
+            <h2>1. Worker Registry</h2>
             <div style="display: flex; gap: 5px;">
-                <input type="text" id="newWorker" placeholder="Add Worker" style="margin:0">
-                <button onclick="addWorker()" style="width: 60px; margin:0; background: var(--blue); color:white; border:none;">Add</button>
+                <input type="text" id="newWorkerName" placeholder="New Name" style="margin-bottom: 0;">
+                <button onclick="addWorker()" style="width: 70px; margin-bottom: 0; background: var(--blue); color: white; border: none; font-size: 0.8rem;">Add</button>
             </div>
-            <div id="workerList" style="margin-top: 10px;"></div>
+            <div id="workerList" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;"></div>
         </div>
 
         <div class="section-box">
-            <h2>Record Harvest</h2>
-            <video id="video-preview" autoplay playsinline></video>
+            <h2>2. Record Harvest</h2>
             <form id="harvestForm">
-                <select id="workerSelect" required><option value="">-- Select Worker --</option></select>
-                <select id="buyerSelect" required>
+                <label>Select Worker</label>
+                <select id="workerDropdown" required><option value="">-- Choose Worker --</option></select>
+                
+                <label>Farm Portion</label>
+                <select id="farmName" required>
+                    <option value="Faith">Faith</option>
+                    <option value="Main">Main</option>
+                    <option value="Mosore">Mosore</option>
+                </select>
+
+                <label>Buying Company</label>
+                <select id="buyerId" required>
                     <option value="sasini">Sasini (10/-)</option>
                     <option value="ktda">KTDA (10/-)</option>
                     <option value="chemalal">Chemalal (8/-)</option>
                     <option value="taiwet">Taiwet (8/-)</option>
                     <option value="unilever">Unilever (8/-)</option>
                 </select>
-                <input type="number" id="weight" step="0.1" placeholder="Enter Kg" required>
-                <button type="submit" class="submit-btn">Save Entry</button>
+                
+                <label>Weight (kg)</label>
+                <input type="number" id="weight" step="0.1" placeholder="0.0" required>
+                
+                <button type="submit" class="submit-btn">Save to Ledger</button>
             </form>
         </div>
     </div>
 
     <div class="section-box">
         <h2>Production History</h2>
-        <div style="max-height: 500px; overflow-y: auto;">
+        <div class="scroll-area">
             <table id="historyTable">
-                <thead><tr><th>Date</th><th>Worker</th><th>Buyer</th><th>Kg</th><th>Pay</th><th></th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Date & Worker</th>
+                        <th>Buyer & Farm</th>
+                        <th>Rate</th>
+                        <th>Kg</th>
+                        <th>Earnings</th>
+                        <th></th>
+                    </tr>
+                </thead>
                 <tbody id="historyBody"></tbody>
             </table>
         </div>
@@ -115,29 +162,33 @@
 </div>
 
 <script>
-    // Camera Auto-Open
-    async function initCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            const vid = document.getElementById('video-preview');
-            vid.srcObject = stream; vid.style.display = 'block';
-        } catch (e) {}
+    // --- OFFLINE APP ENGINE ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            const swCode = `
+                const CACHE_NAME = 'ken-farms-cache-v19';
+                self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([window.location.href]))));
+                self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+            `;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        });
     }
-    window.onload = initCamera;
 
-    const DB_KEY = "KEN_FARMS_BUYERS_2026";
-    const WORKER_KEY = "KEN_FARMS_WORKERS_2026";
+    const DB_KEY = "KEN_FARMS_V19_UNIFIED";
+    const WORKER_KEY = "KEN_FARMS_WORKERS_V19";
     const BUYER_RATES = { sasini: 10, ktda: 10, chemalal: 8, taiwet: 8, unilever: 8 };
 
+    const initialWorkers = ["Sharon", "Daisy 2", "Chepkoech", "Doreen"];
     let records = JSON.parse(localStorage.getItem(DB_KEY)) || [];
-    let workers = JSON.parse(localStorage.getItem(WORKER_KEY)) || ["Sharon", "Daisy 2", "Chepkoech", "Doreen"];
+    let workers = JSON.parse(localStorage.getItem(WORKER_KEY)) || initialWorkers;
 
     function addWorker() {
-        const name = document.getElementById('newWorker').value.trim();
+        const name = document.getElementById('newWorkerName').value.trim();
         if (name && !workers.includes(name)) {
             workers.push(name);
             localStorage.setItem(WORKER_KEY, JSON.stringify(workers));
-            document.getElementById('newWorker').value = '';
+            document.getElementById('newWorkerName').value = '';
             updateWorkerUI();
         }
     }
@@ -151,12 +202,13 @@
     }
 
     function updateWorkerUI() {
-        const list = document.getElementById('workerList');
-        const drop = document.getElementById('workerSelect');
-        list.innerHTML = ''; drop.innerHTML = '<option value="">-- Select Worker --</option>';
+        const listDiv = document.getElementById('workerList');
+        const dropdown = document.getElementById('workerDropdown');
+        listDiv.innerHTML = '';
+        dropdown.innerHTML = '<option value="">-- Choose Worker --</option>';
         workers.sort().forEach(w => {
-            list.innerHTML += `<span class="worker-tag">${w}<button onclick="removeWorker('${w}')">×</button></span>`;
-            drop.innerHTML += `<option value="${w}">${w}</option>`;
+            listDiv.innerHTML += `<span class="worker-tag">${w} <button onclick="removeWorker('${w}')">×</button></span>`;
+            dropdown.innerHTML += `<option value="${w}">${w}</option>`;
         });
     }
 
@@ -166,14 +218,16 @@
         let stats = { sasini: 0, ktda: 0, chemalal: 0, taiwet: 0, unilever: 0, totalPay: 0 };
 
         [...records].reverse().forEach(r => {
-            stats[r.buyer] += r.weight;
+            stats[r.buyerId] += r.weight;
             const pay = r.weight * r.rate;
             stats.totalPay += pay;
             body.innerHTML += `<tr>
-                <td>${r.date}</td><td><strong>${r.name}</strong></td>
-                <td style="text-transform:capitalize">${r.buyer}</td>
-                <td>${r.weight}</td><td class="money-text">${pay.toFixed(2)}</td>
-                <td><button onclick="deleteRec(${r.id})" style="color:red;border:none;background:none;cursor:pointer">×</button></td>
+                <td><small>${r.date}</small><br><strong>${r.name}</strong></td>
+                <td style="text-transform:capitalize">${r.buyerId}<span class="details-stamp">Farm: ${r.farmPortion}</span></td>
+                <td>${r.rate}/-</td>
+                <td>${r.weight.toFixed(1)}</td>
+                <td class="money-text">Ksh ${pay.toFixed(2)}</td>
+                <td><button onclick="deleteRec(${r.id})" style="color:red;border:none;background:none;cursor:pointer;font-weight:bold">×</button></td>
             </tr>`;
         });
 
@@ -183,13 +237,14 @@
 
     document.getElementById('harvestForm').onsubmit = function(e) {
         e.preventDefault();
-        const buyer = document.getElementById('buyerSelect').value;
+        const bId = document.getElementById('buyerId').value;
         records.push({
             id: Date.now(),
-            name: document.getElementById('workerSelect').value,
-            buyer: buyer,
+            name: document.getElementById('workerDropdown').value,
+            farmPortion: document.getElementById('farmName').value,
+            buyerId: bId,
             weight: parseFloat(document.getElementById('weight').value),
-            rate: BUYER_RATES[buyer],
+            rate: BUYER_RATES[bId],
             date: new Date().toLocaleDateString()
         });
         localStorage.setItem(DB_KEY, JSON.stringify(records));
@@ -198,7 +253,11 @@
     };
 
     function deleteRec(id) {
-        if(confirm("Delete record?")) { records = records.filter(r => r.id !== id); localStorage.setItem(DB_KEY, JSON.stringify(records)); render(); }
+        if(confirm("Delete this entry?")) {
+            records = records.filter(r => r.id !== id);
+            localStorage.setItem(DB_KEY, JSON.stringify(records));
+            render();
+        }
     }
 
     function generatePDF() {
@@ -207,18 +266,48 @@
         const tKg = records.reduce((s, r) => s + r.weight, 0);
         const tPay = records.reduce((s, r) => s + (r.weight * r.rate), 0);
 
-        doc.setFontSize(20); doc.setTextColor(27, 94, 32);
-        doc.text("KEN FARMS OFFICIAL HARVEST REPORT", 105, 20, { align: "center" });
+        // --- Designing the Header Section ---
         
+        // 1. Stylized Tea Leaf Logo
+        doc.setDrawColor(27, 94, 32); doc.setLineWidth(1.5);
+        doc.ellipse(20, 20, 8, 4); // basic leaf shape
+        doc.line(16, 20, 24, 20); // leaf vein
+        
+        // 2. Main Title
+        doc.setFont("helvetica", "bold"); doc.setFontSize(24); doc.setTextColor(27, 94, 32); 
+        doc.text("KEN FARMS", 35, 23);
+        
+        // 3. Subtitle
+        doc.setFontSize(10); doc.setTextColor(100); doc.setFont("helvetica", "normal");
+        doc.text("Official Tea Production & Executive Payroll Report", 35, 28);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 35, 33);
+
+        // 4. Executive Summary Box
+        doc.setDrawColor(200); doc.setFillColor(245, 248, 245); doc.setLineWidth(0.5);
+        doc.roundedRect(14, 40, 182, 22, 3, 3, 'FD'); 
+        
+        doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(0);
+        doc.text("CONSOLIDATED GRAND TOTALS", 105, 47, { align: "center" });
+        doc.text(`Total Weight: ${tKg.toFixed(1)} Kg`, 45, 55);
+        doc.text(`Total Payable: Ksh ${tPay.toLocaleString()}`, 125, 55);
+
+        // --- Designing the Data Table ---
         doc.autoTable({
-            startY: 35,
-            head: [['Date', 'Worker', 'Buyer', 'Rate', 'Weight', 'Total']],
-            body: records.map(r => [r.date, r.name, r.buyer.toUpperCase(), r.rate, r.weight, (r.weight*r.rate).toFixed(2)]),
-            foot: [['', '', 'GRAND TOTALS', '', `${tKg.toFixed(1)} kg`, `Ksh ${tPay.toLocaleString()}`]],
-            headStyles: { fillColor: [27, 94, 32] },
-            footStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: 'bold' }
+            startY: 68,
+            head: [['Date', 'Worker', 'Farm', 'Buyer', 'Rate', 'Weight', 'Total (Ksh)']],
+            body: records.map(r => [r.date, r.name, r.farmPortion, r.buyerId.toUpperCase(), `${r.rate}/-`, `${r.weight.toFixed(1)} kg`, (r.weight*r.rate).toFixed(2)]),
+            headStyles: { fillColor: [27, 94, 32], textColor: [255, 255, 255] },
+            alternateRowStyles: { fillColor: [248, 250, 248] },
+            margin: { bottom: 60 } // room for signature
         });
-        doc.save("Ken_Farms_Report.pdf");
+
+        // --- Designing the Signature Section ---
+        const finalY = doc.lastAutoTable.finalY + 30;
+        doc.setDrawColor(150); doc.setFontSize(10); doc.setTextColor(100);
+        doc.line(20, finalY, 80, finalY); doc.text("Manager Signature", 20, finalY + 5);
+        doc.line(130, finalY, 190, finalY); doc.text("Recipient Signature", 130, finalY + 5);
+
+        doc.save(`Ken_Farms_Executive_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     }
 
     updateWorkerUI(); render();
